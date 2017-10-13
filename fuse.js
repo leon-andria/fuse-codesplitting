@@ -1,6 +1,6 @@
 const { FuseBox, CSSPlugin, SassPlugin, WebIndexPlugin, QuantumPlugin, Sparky } = require("fuse-box");
 
-let fuse, app, vendor, isProduction = false;
+let fuse, app, server, vendor, isProduction = false;
 
 Sparky.task("config", () => {
     fuse = FuseBox.init({
@@ -18,14 +18,19 @@ Sparky.task("config", () => {
     });
 
     // vendor should come first
-    vendor = fuse.bundle("vendor")
-        .instructions("~ index.ts +moment");
+    vendor = fuse.bundle("client/vendor")
+        .instructions("~ index.ts + moment");
 
     // out main bundle
-    app = fuse.bundle("app")
+    app = fuse.bundle("client/app")
         .split("routes/home/**", "home > routes/home/HomeComponent.ts")
         .split("routes/about/**", "about > routes/about/AboutComponent.ts")
-        .instructions("> [index.ts] [**/**.ts]")
+        .instructions("> [client/index.ts] [**/**.ts]")
+
+    app = fuse.bundle("server/app")
+        .split("routes/home/**", "home > routes/home/HomeComponent.ts")
+        .split("routes/about/**", "about > routes/about/AboutComponent.ts")
+        .instructions("> [server/index.ts] [**/**.ts]")
 
     if (!isProduction) {
         fuse.dev();
