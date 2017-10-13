@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "fuse-box": "^2.3.3"
+    "fuse-box": "^2.3.3",
+    "typescript": "^2.5.3"
   },
   "dependencies": {
     "express": "^4.16.2",
