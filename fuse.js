@@ -9,26 +9,26 @@ Sparky.task("config", () => {
         experimentalFeatures: true,
         hash: false,
         sourceMaps: !isProduction,
-        target: "universal",
+        target: "Server",
         plugins: [
             WebIndexPlugin(),
             isProduction && QuantumPlugin({
                 uglify: false,
                 bakeApiIntoBundle: "server/server",
-                containedAPI: false
+                containedAPI: true
             }),
         ]
     });
 
     // vendor should come first
-    vendor = fuse.bundle("client/vendor")
-        .instructions("~ index.ts + moment");
+    // vendor = fuse.bundle("client/vendor")
+    //     .instructions("~ index.ts + moment");
 
     // out main bundle
-    client = fuse.bundle("client/client")
-        .split("routes/home/**", "home > routes/home/HomeComponent.ts")
-        .split("routes/about/**", "about > routes/about/AboutComponent.ts")
-        .instructions("> [client/index.ts] [**/**.ts]")
+    // client = fuse.bundle("client/client")
+    //     .split("routes/home/**", "home > routes/home/HomeComponent.ts")
+    //     .split("routes/about/**", "about > routes/about/AboutComponent.ts")
+    //     .instructions("> [client/index.ts] [**/**.ts]")
 
     server = fuse.bundle("server/server")
         // .plugin(isProduction && QuantumPlugin({
@@ -38,7 +38,7 @@ Sparky.task("config", () => {
         .splitConfig({ server: "",  dest: "bundles/" })
         .split("routes/home/**", "home > routes/home/HomeComponent.ts")
         .split("routes/about/**", "about > routes/about/AboutComponent.ts")
-        .instructions("> [server/index.ts] [**/**.ts]")
+        .instructions("> [server/index.ts]")
 
     if (!isProduction) {
         fuse.dev();
