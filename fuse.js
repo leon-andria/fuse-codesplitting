@@ -1,18 +1,20 @@
 const { FuseBox, CSSPlugin, SassPlugin, WebIndexPlugin, QuantumPlugin, Sparky } = require("fuse-box");
 
-let fuse, app, server, vendor, isProduction = false;
+let fuse, client, server, vendor, isProduction = false;
 
 Sparky.task("config", () => {
     fuse = FuseBox.init({
         homeDir: "src",
         output: "dist/$name.js",
         experimentalFeatures: true,
-        hash: isProduction,
+        hash: false,
         sourceMaps: !isProduction,
         plugins: [
             WebIndexPlugin(),
             isProduction && QuantumPlugin({
-                uglify: false
+                uglify: false,
+                bakeApiIntoBundle: "server/server",
+                containedAPI: false
             }),
         ]
     });
@@ -22,12 +24,17 @@ Sparky.task("config", () => {
         .instructions("~ index.ts + moment");
 
     // out main bundle
-    app = fuse.bundle("client/app")
+    client = fuse.bundle("client/client")
         .split("routes/home/**", "home > routes/home/HomeComponent.ts")
         .split("routes/about/**", "about > routes/about/AboutComponent.ts")
         .instructions("> [client/index.ts] [**/**.ts]")
 
-    app = fuse.bundle("server/app")
+    server = fuse.bundle("server/server")
+        // .plugin(isProduction && QuantumPlugin({
+        //     uglify: false
+        // }))
+        .target("server")
+        .splitConfig({ dest: "bundles/" })
         .split("routes/home/**", "home > routes/home/HomeComponent.ts")
         .split("routes/about/**", "about > routes/about/AboutComponent.ts")
         .instructions("> [server/index.ts] [**/**.ts]")
