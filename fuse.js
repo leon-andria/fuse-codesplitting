@@ -9,6 +9,7 @@ Sparky.task("config", () => {
         experimentalFeatures: true,
         hash: false,
         sourceMaps: !isProduction,
+        target: "universal",
         plugins: [
             WebIndexPlugin(),
             isProduction && QuantumPlugin({
@@ -34,7 +35,7 @@ Sparky.task("config", () => {
         //     uglify: false
         // }))
         .target("server")
-        .splitConfig({ dest: "bundles/" })
+        .splitConfig({ server: "",  dest: "bundles/" })
         .split("routes/home/**", "home > routes/home/HomeComponent.ts")
         .split("routes/about/**", "about > routes/about/AboutComponent.ts")
         .instructions("> [server/index.ts] [**/**.ts]")
@@ -47,7 +48,7 @@ Sparky.task("config", () => {
 // development task "node fuse""
 Sparky.task("default", ["config"], () => {
     vendor.hmr().watch();
-    app.watch();
+    client.watch();
     return fuse.run();
 });
 
@@ -63,5 +64,5 @@ Sparky.task("set-production", () => {
 });
 
 Sparky.task("test", ["config"], () => {
-    return app.test();
+    return client.test();
 });
