@@ -8,14 +8,14 @@ Sparky.task("config", () => {
         output: "dist/$name.js",
         experimentalFeatures: true,
         hash: false,
-        sourceMaps: !isProduction,
-        target: "Server",
+        sourceMaps: !isProduction,        
         plugins: [
             WebIndexPlugin(),
             isProduction && QuantumPlugin({
                 uglify: false,
                 bakeApiIntoBundle: "server/server",
-                containedAPI: true
+                target: "server",
+                // containedAPI: f
             }),
         ]
     });
@@ -34,11 +34,11 @@ Sparky.task("config", () => {
         // .plugin(isProduction && QuantumPlugin({
         //     uglify: false
         // }))
-        .target("server")
-        .splitConfig({ server: "",  dest: "bundles/" })
+        // .target("server")
+        .splitConfig({ browser: "../", server: "../",  dest: "bundles/" })        
         .split("routes/home/**", "home > routes/home/HomeComponent.ts")
         .split("routes/about/**", "about > routes/about/AboutComponent.ts")
-        .instructions("> [server/index.ts]")
+        .instructions("> [server/index.ts] [routes/**/**.ts]")
 
     if (!isProduction) {
         fuse.dev();
@@ -47,8 +47,8 @@ Sparky.task("config", () => {
 
 // development task "node fuse""
 Sparky.task("default", ["config"], () => {
-    vendor.hmr().watch();
-    client.watch();
+    // vendor.hmr().watch();
+    // client.watch();
     return fuse.run();
 });
 
