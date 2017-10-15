@@ -35,7 +35,7 @@ Sparky.task("config", () => {
         //     uglify: false
         // }))
         // .target("server")
-        .splitConfig({ browser: "../", server: "../",  dest: "bundles/" })        
+        .splitConfig({ browser: "../thisisbrowser/", server: "../",  dest: "bundles/" })        
         .split("routes/home/**", "home > routes/home/HomeComponent.ts")
         .split("routes/about/**", "about > routes/about/AboutComponent.ts")
         .instructions("> [server/index.ts] [routes/**/**.ts]")
